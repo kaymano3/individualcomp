@@ -1,0 +1,699 @@
+#include <FEHLCD.h>
+#include <FEHIO.h>
+#include <FEHUtility.h>
+#include <FEHMotor.h>
+#include <FEHRPS.h>
+#include <FEHServo.h>
+//Declarations for encoders & motors
+DigitalEncoder right_encoder(FEHIO::P0_0);
+DigitalEncoder left_encoder(FEHIO::P2_7);
+FEHMotor right_motor(FEHMotor::Motor1,9.0);
+FEHMotor left_motor(FEHMotor::Motor0,9.0);
+AnalogInputPin cds (FEHIO::P1_7);
+FEHServo robot_arm(FEHServo::Servo0);
+void move_forward(int percent, int counts) //using encoders
+{
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+    right_motor.SetPercent(percent);
+    left_motor.SetPercent(percent);
+
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+   float t_now=TimeNow();
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<6.0);
+
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void move_forwardfoos(int leftPercent, int rightPercent, int counts)
+{
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+    right_motor.SetPercent(rightPercent);
+    left_motor.SetPercent(leftPercent);
+
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+   float t_now=TimeNow();
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<6.0);
+
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void turn(int leftPercent, int rightPercent, int counts) {
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+    right_motor.SetPercent(rightPercent);
+    left_motor.SetPercent(leftPercent);
+
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+    float t_now=TimeNow();
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<3.0);
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void turnfoos(int leftPercent, int rightPercent, int counts) {
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+    right_motor.SetPercent(rightPercent);
+    left_motor.SetPercent(leftPercent);
+
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+    float t_now=TimeNow();
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<3.0);
+    LCD.WriteLine("We got here");
+    if(TimeNow()-t_now>=2.0){
+        LCD.WriteLine("We also got here");
+        int n=0;
+        while( n< 6){
+       leftPercent=-15;
+       rightPercent=0;
+      counts=4;
+      move_forwardfoos(leftPercent,rightPercent,counts);
+      LCD.WriteLine("Here as well");
+      leftPercent=0;
+      rightPercent=70;
+     counts=4;
+     move_forwardfoos(leftPercent,rightPercent,counts);
+     LCD.WriteLine("Here");
+      n++;
+        }
+        int k=0;
+        while( k< 6){
+       leftPercent=-15;
+       rightPercent=0;
+      counts=4;
+      move_forwardfoos(leftPercent,rightPercent,counts);
+      LCD.WriteLine("Here as well");
+      leftPercent=0;
+      rightPercent=50;
+     counts=4;
+     move_forwardfoos(leftPercent,rightPercent,counts);
+     LCD.WriteLine("Here");
+      k++;
+        }
+    }
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void dance (int leftPercent, int rightPercent,int  motor_percent,int expected_counts){
+    expected_counts=100;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=110;
+    rightPercent=0;
+    leftPercent=25;
+     turn(leftPercent,rightPercent,expected_counts);
+     expected_counts=15;
+    move_forward(motor_percent,expected_counts);
+    if(cds.Value()<1){
+        LCD.WriteLine("The light is red");
+        leftPercent=0;
+        rightPercent=25;
+      expected_counts= 234.74;
+      turn(leftPercent,rightPercent,expected_counts);
+      expected_counts=1000;
+      motor_percent=-25;
+    // move_forward(motor_percent,expected_counts);
+   //  motor_percent=25;
+   //   expected_counts=50;
+   //  move_forward(motor_percent,expected_counts);
+   //  leftPercent=25;
+   //  rightPercent=0;
+  //   expected_counts=117;
+   //  turn(leftPercent,rightPercent,expected_counts);
+  //   expected_counts=125;
+   //  move_forward(motor_percent,expected_counts);
+  //   leftPercent=0;
+   //  rightPercent=25;
+   //  expected_counts=112;
+  //   turn(leftPercent,rightPercent,expected_counts);
+  //      leftPercent=25;
+  //      rightPercent=0;
+   //     expected_counts=234;
+   //     turn(leftPercent,rightPercent,expected_counts);
+   //     expected_counts=468;
+   //     turn(leftPercent,rightPercent,expected_counts);
+   //     motor_percent=-25;
+   //     expected_counts=1000;
+   //     move_forward(motor_percent,expected_counts);
+   //     expected_counts=60;
+   //     motor_percent=25;
+   //     move_forward(motor_percent,expected_counts);
+   //     rightPercent=25;
+  //      leftPercent=0;
+   //     expected_counts = 234;
+  //      turn(leftPercent,rightPercent,expected_counts);
+   //     expected_counts=130;
+  //      motor_percent=25;
+   //     move_forward(motor_percent,expected_counts);
+  //      leftPercent=25;
+   //     rightPercent=0;
+   //     expected_counts=468;
+   //     turn(leftPercent,rightPercent,expected_counts);
+   //     motor_percent=-25;
+   //     expected_counts=1000;
+     //   move_forward(motor_percent,expected_counts);
+
+
+    }
+        else if(cds.Value()>1){
+        LCD.WriteLine("The light is blue");
+        expected_counts=500;
+        motor_percent=25;
+        move_forward(motor_percent,expected_counts);
+        leftPercent=0;
+       rightPercent=25;
+        expected_counts=234;
+        turn(leftPercent,rightPercent,expected_counts);
+        expected_counts = 400;
+        motor_percent = -25;
+        move_forward(motor_percent,expected_counts);
+
+
+    }
+   // expected_counts=254;
+   // move_forward(motor_percent,expected_counts);
+//    motor_percent=70;
+    //expected_counts=2300;
+  //  move_forward(motor_percent,expected_counts);
+   // motor_percent=25;
+   // expected_counts=1000;
+  //  move_forward(motor_percent,expected_counts);
+}
+void dancecomp(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+ //   expected_counts=130;
+  //  motor_percent=25;
+  //  move_forward(motor_percent,expected_counts);
+  //  expected_counts=110;
+  //  rightPercent=0;
+  //   leftPercent=25;
+  //   turn(leftPercent,rightPercent,expected_counts);
+  //   expected_counts=400;
+  //   move_forward(motor_percent,expected_counts);
+  //   leftPercent=0;
+  //  rightPercent=25;
+  //   expected_counts=234;
+     rightPercent=0;
+     leftPercent=25;
+     expected_counts=200;
+     turn(leftPercent,rightPercent,expected_counts);
+     expected_counts=280;
+     motor_percent=25;
+     move_forward(motor_percent,expected_counts);
+     expected_counts=215;
+     rightPercent=50;
+     leftPercent=0;
+     turn(leftPercent,rightPercent,expected_counts);
+     expected_counts = 2000;
+     motor_percent = -25;
+     move_forward(motor_percent,expected_counts);
+    leftPercent=70;
+    rightPercent=68;
+     expected_counts=1200;
+     move_forwardfoos(leftPercent,rightPercent,expected_counts);
+     leftPercent=27;
+     rightPercent=25;
+     expected_counts=810;
+     move_forwardfoos(leftPercent,rightPercent,expected_counts);
+}
+
+void token (int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+    //move forward 1 inch
+   //ove_forward(motor_percent,expected_counts);
+    //turn 90 degrees to left
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    //move five inches
+   //xpected_counts=35;
+  //move_forward(motor_percent,expected_counts);
+    //turn 90 degrees to right
+    leftPercent=25;
+    rightPercent=0;
+    expected_counts=117;
+    turn(leftPercent, rightPercent,expected_counts);
+    //move forward 20 inches up the ramp
+    expected_counts=1000;
+    motor_percent=60;
+    move_forward(motor_percent,expected_counts);
+    //turn 90 degrees to the right
+    leftPercent=25;
+    rightPercent=0;
+    expected_counts=468;
+    turn(leftPercent,rightPercent,expected_counts);
+
+
+    expected_counts=72;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+
+       robot_arm.SetDegree(0);
+
+//move_forward(motor_percent, expected_counts);
+    //move forward 2 inches
+   //xpected_counts=70.33;
+   //ove_forward(motor_percent,expected_counts);
+    //turn right 90 degrees
+   //xpected_counts=117;
+  //turn(leftPercent,rightPercent,expected_counts);
+}
+void tokencomp(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+ //   rightPercent=25;
+  //  leftPercent=0;
+   // expected_counts=420;
+  //  turn(leftPercent, rightPercent, expected_counts);
+  //  expected_counts=250;
+  //  motor_percent=25;
+  //  move_forward(motor_percent, expected_counts);
+  //  expected_counts=170;
+  //  turn(leftPercent, rightPercent, expected_counts);
+ //   expected_counts=200;
+//    move_forward(motor_percent, expected_counts);
+    expected_counts=220;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=100;
+    leftPercent=0;
+    rightPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=250;
+    move_forward(motor_percent,expected_counts);
+    robot_arm.SetDegree(100);
+    motor_percent=-25;
+    expected_counts=470;
+    move_forward(motor_percent,expected_counts);
+}
+void foosballcomp(int leftPercent,int rightPercent, int motor_percent, int expected_counts){
+ //   expected_counts=160;
+  //  motor_percent=-25;
+ //   move_forward(motor_percent,expected_counts);
+ //   expected_counts=80;
+ //   leftPercent=0;
+ //   rightPercent=25;
+  //  turn(leftPercent,rightPercent,expected_counts);
+  //  expected_counts=165;
+  //  leftPercent=50;
+  //  rightPercent=80;
+  //  LCD.WriteLine("Left Motor is");
+  //  LCD.Write(leftPercent);
+  //  LCD.WriteLine("Right Motor is:");
+  //  LCD.Write(rightPercent);
+  //  move_forwardfoos(leftPercent,rightPercent,expected_counts);
+//   expected_counts=500;
+//   leftPercent=0;
+//  rightPercent=40;
+//  turnfoos(leftPercent,rightPercent,expected_counts);
+ //   motor_percent=-25;
+ //   expected_counts=158;
+//    move_forward(motor_percent,expected_counts);
+ //   expected_counts=39;
+  //  leftPercent=25;
+ //   rightPercent=0;
+ //   turn(leftPercent,rightPercent,expected_counts);
+  //  leftPercent=20;
+  //  rightPercent=52;
+  // expected_counts=145 ;
+  //  move_forwardfoos(leftPercent,rightPercent,expected_counts);
+    expected_counts=211;
+    motor_percent=-25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=77.22;
+    leftPercent=0;
+    rightPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=94;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=35;
+    leftPercent=0;
+    rightPercent=60;
+    turnfoos(leftPercent,rightPercent,expected_counts);
+    expected_counts=200;
+    motor_percent=-25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=100;
+    leftPercent=-25;
+    rightPercent=0;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=234;
+    leftPercent=0;
+    rightPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=1250;
+    motor_percent=35;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=234;
+    leftPercent=25;
+    rightPercent=0;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=450;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=117;
+    leftPercent=0;
+    rightPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=400;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+   /* motor_percent=-25;
+    expected_counts=125;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=39;
+    leftPercent=25;
+    rightPercent=0;
+    turn(leftPercent,rightPercent,expected_counts);
+    leftPercent=25;
+    rightPercent=55;
+    expected_counts=145 ;
+    move_forwardfoos(leftPercent,rightPercent,expected_counts);*/
+}
+void levercomp(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+  motor_percent=-25;
+  expected_counts=57;
+  move_forward(motor_percent,expected_counts);
+  leftPercent=-25;
+  rightPercent=0;
+  expected_counts=15;
+  turn(leftPercent,rightPercent,expected_counts);
+  motor_percent=25;
+  expected_counts=350;
+  move_forward(motor_percent,expected_counts);
+  leftPercent=25;
+  rightPercent=0;
+  expected_counts=117;
+  turn(leftPercent,rightPercent, expected_counts);
+  expected_counts=50;
+  motor_percent=25;
+  move_forward(motor_percent,expected_counts);
+  robot_arm.SetDegree(165);
+  motor_percent=-25;
+  expected_counts=10;
+  move_forward(motor_percent,expected_counts);
+  robot_arm.SetDegree(0);
+  leftPercent=-25;
+  rightPercent=0;
+  expected_counts=118;
+  turn(leftPercent,rightPercent,expected_counts);
+  leftPercent=0;
+  rightPercent=25;
+  expected_counts=237;
+  turn(leftPercent,rightPercent,expected_counts);
+  motor_percent=25;
+  expected_counts=1000;
+  move_forward(motor_percent,expected_counts);
+}
+
+void foosball(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+    //encoders: counts=211 for 6 inches at 25 speed; 241 for 6 inches at 50+ speed
+   expected_counts=130;
+   move_forward(motor_percent,expected_counts);
+   expected_counts=110;
+   rightPercent=0;
+    leftPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=360;
+    move_forward(motor_percent,expected_counts);
+    leftPercent=0;
+   rightPercent=25;
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts = 400;
+    motor_percent = -25;
+    move_forward(motor_percent,expected_counts);
+    motor_percent=70;
+    expected_counts=2200;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=211;
+    motor_percent=-25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=77.22;
+    leftPercent=0;
+    rightPercent=25;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts=134;
+    motor_percent=25;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=117;
+    leftPercent=0;
+    rightPercent=40;
+    turnfoos(leftPercent,rightPercent,expected_counts);
+    motor_percent=-25;
+    expected_counts=125;
+    move_forward(motor_percent,expected_counts);
+    expected_counts=39;
+    leftPercent=25;
+    rightPercent=0;
+    turn(leftPercent,rightPercent,expected_counts);
+    leftPercent=25;
+    rightPercent=55;
+    expected_counts=145 ;
+    move_forwardfoos(leftPercent,rightPercent,expected_counts);
+    motor_percent=-25;
+    expected_counts=500;
+    move_forward(motor_percent,expected_counts);
+    rightPercent=25;
+    leftPercent=0;
+    expected_counts=210;
+    turn(leftPercent,rightPercent,expected_counts);
+    motor_percent=60;
+    expected_counts=700;
+    move_forward(motor_percent,expected_counts);
+}
+void check_x_plus(float x_coordinate) //using RPS while robot is in the +x direction
+{
+    //check whether the robot is within an acceptable range
+    while(RPS.X() < x_coordinate - 1 || RPS.X() > x_coordinate + 1)
+    {
+        if(RPS.X() > x_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(-25,15);
+        }
+        else if(RPS.X() < x_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(25,15);
+        }
+    }
+}
+
+void check_y_minus(float y_coordinate) //using RPS while robot is in the -y direction
+{
+    //check whether the robot is within an acceptable range
+    while(RPS.Y() < y_coordinate - 1 || RPS.Y() > y_coordinate + 1)
+    {
+        if(RPS.Y() > y_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(-25,10);
+        }
+        else if(RPS.Y() < y_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(25,10);
+        }
+    }
+}
+
+void check_y_plus(float y_coordinate) //using RPS while robot is in the +y direction
+{
+    //check whether the robot is within an acceptable range
+    while(RPS.Y() < y_coordinate - 1 || RPS.Y() > y_coordinate + 1)
+    {
+        if(RPS.Y() > y_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(-25,15);
+        }
+        else if(RPS.Y() < y_coordinate)
+        {
+            //pulse the motors for a short duration in the correct direction
+
+            move_forward(25,15);
+        }
+    }
+}
+//void check_heading(float heading){
+  //  while(RPS.Heading()<heading-10 || RPS.Heading()>heading+10){
+     //   if(RPS.Heading()>heading){
+     //   turn_right(15,35);
+   // }
+  //  else if(RPS.Heading()<heading){
+   //     turn_left(15,35);
+  //  }
+  //  Sleep(.5);
+//}
+//}
+void check_headingzero(float heading){
+    if((int) heading == 0)
+    {
+        while((RPS.Heading()> heading+2) &&(RPS.Heading() <359-2)){
+      left_motor.SetPercent(5);
+
+        if(RPS.Heading()>heading+2){
+       right_motor.SetPercent(0);
+       left_motor.SetPercent(20);
+        right_motor.Stop();
+        left_motor.Stop();
+        LCD.Write("Heading: ");
+        LCD.WriteLine(heading);
+        }
+        //Reset encoder counts
+        right_encoder.ResetCounts();
+        left_encoder.ResetCounts();
+        }
+    }
+}
+void competition(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
+    token(leftPercent,rightPercent,motor_percent,expected_counts);
+    //6 inches=211 at 25 motor percent 6 inches=254 at 50 percent
+    //backward 5 inches
+    motor_percent=-25;
+    expected_counts=175;
+    move_forward(motor_percent,expected_counts);
+    //turn left 90
+    leftPercent=0;
+    rightPercent=25;
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    motor_percent=25;
+    expected_counts=540;
+    move_forward(motor_percent,expected_counts);
+    rightPercent = 0;
+    leftPercent =25;
+    expected_counts = 234;
+    turn(leftPercent,rightPercent,expected_counts);
+    expected_counts = 480;
+    move_forward(motor_percent,expected_counts);
+    foosball(leftPercent,rightPercent,motor_percent,expected_counts);
+    expected_counts = 100;
+    motor_percent=-25;
+    move_forward(motor_percent,expected_counts);
+    motor_percent=25;
+    expected_counts=1000;
+    move_forward(motor_percent,expected_counts);
+    motor_percent=-25;
+    expected_counts=60;
+    move_forward(motor_percent,expected_counts);
+    rightPercent=25;
+    leftPercent=0;
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    motor_percent=25;
+    expected_counts=340;
+    move_forward(motor_percent,expected_counts);
+    rightPercent=25;
+    leftPercent=0;
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    motor_percent=25;
+    expected_counts=400;
+    move_forward(motor_percent,expected_counts);
+    leftPercent=25;
+    rightPercent=0;
+    expected_counts=234;
+    turn(leftPercent,rightPercent,expected_counts);
+    motor_percent=60;
+    expected_counts=800;
+    move_forward(motor_percent,expected_counts);
+    dance(leftPercent,rightPercent,motor_percent,expected_counts);
+}
+void adjustedComp(int leftPercent, int rightPercent, int expected_counts, int motor_percent){
+    tokencomp(leftPercent,rightPercent, motor_percent,expected_counts);
+     dancecomp(leftPercent,rightPercent,motor_percent,expected_counts);
+     foosballcomp(leftPercent,rightPercent,motor_percent,expected_counts);
+    //levercomp(leftPercent,rightPercent,motor_percent,expected_counts);
+}
+
+int main(void)
+{
+      float touch_x,touch_y;
+    float heading=RPS.Heading();
+    float xvalue=RPS.X(), yvalue=RPS.Y();
+   // float touch_x, touch_y;
+
+
+        //Call this function to initialize the RPS to a course
+      RPS.InitializeTouchMenu();
+
+
+        //Wait for touchscreen to be pressed
+       // LCD.WriteLine("Press Screen to Start");
+       // while(!LCD.Touch(&touch_x, &touch_y));
+
+    //
+       // LCD.Clear();
+
+
+        //Write initial screen info
+      // LCD.WriteRC("RPS Test Program",0,0);
+      // LCD.WriteRC("X Position:",2,0);
+      // LCD.WriteRC("Y Position:",3,0);
+      // LCD.WriteRC("   Heading:",4,0);
+
+     //  while( true )
+      // {
+          // LCD.WriteRC(RPS.X(),2,12); //update the x coordinate
+         //  LCD.WriteRC(RPS.Y(),3,12); //update the y coordinate
+          // LCD.WriteRC(RPS.Heading(),4,12); //update the heading
+
+         //  Sleep(10); //wait for a 10ms to avoid updating the screen too quickly
+      // }
+
+
+        //we will never get here because of the infinite while loop
+        //return 0;
+    //}
+   // RPS.InitializeTouchMenu();
+    int motor_percent = 25; //Input power level here
+    int expected_counts =72 ; //Input theoretical counts here
+    int leftPercent=0;
+    int rightPercent=25;
+    robot_arm.SetMax(1908);
+    robot_arm.SetMin(500);
+    float x, y; //for touch screen
+    robot_arm.SetDegree(0); //opens claw
+    Sleep(3.0);
+   robot_arm.SetDegree(165);//closes claw
+    //Initialize the screen
+    LCD.Clear(BLACK);
+    LCD.SetFontColor(WHITE);
+    LCD.WriteLine("The CDS Value is:");
+    LCD.Write(cds.Value());
+  //  LCD.WriteLine("Touch the screen");
+   // while(!LCD.Touch(&x,&y)); //Wait for screen to be pressed
+ //   while(LCD.Touch(&x,&y));
+    while(true){//Wait for screen to be unpressed
+   if(cds.Value()<1){
+       // move forward 1 inches
+      adjustedComp(leftPercent, rightPercent, motor_percent, expected_counts);
+}
+  }
+}
+
+
