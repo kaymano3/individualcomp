@@ -24,7 +24,26 @@ void move_forward(int percent, int counts) //using encoders
     //While the average of the left and right encoder is less than counts,
     //keep running motors
    float t_now=TimeNow();
-    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<6.0);
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<5.5);
+
+    //Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+void move_forwarddance(int percent, int counts) //using encoders
+{
+    //Reset encoder counts
+    right_encoder.ResetCounts();
+    left_encoder.ResetCounts();
+
+    //Set both motors to desired percent
+    right_motor.SetPercent(percent);
+    left_motor.SetPercent(percent);
+
+    //While the average of the left and right encoder is less than counts,
+    //keep running motors
+   float t_now=TimeNow();
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts);
 
     //Turn off motors
     right_motor.Stop();
@@ -43,7 +62,7 @@ void move_forwardfoos(int leftPercent, int rightPercent, int counts)
     //While the average of the left and right encoder is less than counts,
     //keep running motors
    float t_now=TimeNow();
-    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<6.0);
+    while((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts && TimeNow()-t_now<10.0);
 
     //Turn off motors
     right_motor.Stop();
@@ -217,23 +236,23 @@ void dancecomp(int leftPercent, int rightPercent, int motor_percent, int expecte
      leftPercent=25;
      expected_counts=200;
      turn(leftPercent,rightPercent,expected_counts);
-     expected_counts=280;
+     expected_counts=275;
      motor_percent=25;
      move_forward(motor_percent,expected_counts);
      expected_counts=215;
      rightPercent=50;
      leftPercent=0;
      turn(leftPercent,rightPercent,expected_counts);
-     expected_counts = 2000;
+     expected_counts = 1200;
      motor_percent = -25;
-     move_forward(motor_percent,expected_counts);
+     move_forwarddance(motor_percent,expected_counts);
     leftPercent=70;
     rightPercent=68;
      expected_counts=1200;
      move_forwardfoos(leftPercent,rightPercent,expected_counts);
      leftPercent=27;
      rightPercent=25;
-     expected_counts=810;
+     expected_counts=800;
      move_forwardfoos(leftPercent,rightPercent,expected_counts);
 }
 
@@ -340,12 +359,12 @@ void foosballcomp(int leftPercent,int rightPercent, int motor_percent, int expec
     leftPercent=0;
     rightPercent=25;
     turn(leftPercent,rightPercent,expected_counts);
-    expected_counts=94;
+    expected_counts=97;
     motor_percent=25;
     move_forward(motor_percent,expected_counts);
     expected_counts=35;
     leftPercent=0;
-    rightPercent=60;
+    rightPercent=70;
     turnfoos(leftPercent,rightPercent,expected_counts);
     expected_counts=200;
     motor_percent=-25;
@@ -354,27 +373,27 @@ void foosballcomp(int leftPercent,int rightPercent, int motor_percent, int expec
     leftPercent=-25;
     rightPercent=0;
     turn(leftPercent,rightPercent,expected_counts);
-    expected_counts=234;
-    leftPercent=0;
-    rightPercent=25;
-    turn(leftPercent,rightPercent,expected_counts);
-    expected_counts=1250;
-    motor_percent=35;
-    move_forward(motor_percent,expected_counts);
-    expected_counts=234;
-    leftPercent=25;
-    rightPercent=0;
-    turn(leftPercent,rightPercent,expected_counts);
-    expected_counts=450;
-    motor_percent=25;
-    move_forward(motor_percent,expected_counts);
-    expected_counts=117;
-    leftPercent=0;
-    rightPercent=25;
-    turn(leftPercent,rightPercent,expected_counts);
-    expected_counts=400;
-    motor_percent=25;
-    move_forward(motor_percent,expected_counts);
+   // expected_counts=234;
+  //  leftPercent=0;
+  //  rightPercent=25;
+  //  turn(leftPercent,rightPercent,expected_counts);
+   // expected_counts=1250;
+  //  motor_percent=35;
+  //  move_forward(motor_percent,expected_counts);
+  //  expected_counts=234;
+  //  leftPercent=25;
+  //  rightPercent=0;
+   // turn(leftPercent,rightPercent,expected_counts);
+  //  expected_counts=450;
+  //  motor_percent=25;
+  //  move_forward(motor_percent,expected_counts);
+  //  expected_counts=117;
+ //   leftPercent=0;
+ //   rightPercent=25;
+ //   turn(leftPercent,rightPercent,expected_counts);
+ //   expected_counts=400;
+ //   motor_percent=25;
+ //   move_forward(motor_percent,expected_counts);
    /* motor_percent=-25;
     expected_counts=125;
     move_forward(motor_percent,expected_counts);
@@ -388,39 +407,58 @@ void foosballcomp(int leftPercent,int rightPercent, int motor_percent, int expec
     move_forwardfoos(leftPercent,rightPercent,expected_counts);*/
 }
 void levercomp(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
-  motor_percent=-25;
-  expected_counts=57;
-  move_forward(motor_percent,expected_counts);
-  leftPercent=-25;
-  rightPercent=0;
-  expected_counts=15;
-  turn(leftPercent,rightPercent,expected_counts);
+  expected_counts=10;
   motor_percent=25;
-  expected_counts=350;
+  move_forward(motor_percent,expected_counts);
+  leftPercent=0;
+  rightPercent=25;
+  expected_counts=83;
+  turn(leftPercent,rightPercent,expected_counts);
+  expected_counts=630;
+  motor_percent=25;
   move_forward(motor_percent,expected_counts);
   leftPercent=25;
   rightPercent=0;
-  expected_counts=117;
-  turn(leftPercent,rightPercent, expected_counts);
-  expected_counts=50;
-  motor_percent=25;
-  move_forward(motor_percent,expected_counts);
-  robot_arm.SetDegree(165);
+  expected_counts=234;
+  turn(leftPercent,rightPercent,expected_counts);
+  leftPercent=23;
+  rightPercent=18;
+  expected_counts=450;
+  move_forwardfoos(leftPercent,rightPercent,expected_counts);
   motor_percent=-25;
-  expected_counts=10;
+   expected_counts=40;
   move_forward(motor_percent,expected_counts);
-  robot_arm.SetDegree(0);
-  leftPercent=-25;
-  rightPercent=0;
-  expected_counts=118;
-  turn(leftPercent,rightPercent,expected_counts);
+  int n=0;
+  while(n<3){
+      leftPercent=25;
+      rightPercent=0;
+      expected_counts=30;
+      turn(leftPercent,rightPercent,expected_counts);
+      rightPercent=-25;
+      leftPercent=0;
+      expected_counts=20;
+      turn(leftPercent,rightPercent,expected_counts);
+      n++;
+  }
+  leftPercent=-40;
+  rightPercent=-25;
+  expected_counts=100;
+  move_forward(motor_percent,expected_counts);
+  rightPercent=-25;
   leftPercent=0;
-  rightPercent=25;
-  expected_counts=237;
+  expected_counts=234;
   turn(leftPercent,rightPercent,expected_counts);
-  motor_percent=25;
-  expected_counts=1000;
+  motor_percent=-25;
+  expected_counts=50;
   move_forward(motor_percent,expected_counts);
+  leftPercent=25;
+  rightPercent=0;
+  expected_counts=234;
+  turn(leftPercent,rightPercent,expected_counts);
+  motor_percent=50;
+  expected_counts=800;
+  move_forward(motor_percent,expected_counts);
+
 }
 
 void foosball(int leftPercent, int rightPercent, int motor_percent, int expected_counts){
@@ -627,7 +665,7 @@ void adjustedComp(int leftPercent, int rightPercent, int expected_counts, int mo
     tokencomp(leftPercent,rightPercent, motor_percent,expected_counts);
      dancecomp(leftPercent,rightPercent,motor_percent,expected_counts);
      foosballcomp(leftPercent,rightPercent,motor_percent,expected_counts);
-    //levercomp(leftPercent,rightPercent,motor_percent,expected_counts);
+    levercomp(leftPercent,rightPercent,motor_percent,expected_counts);
 }
 
 int main(void)
@@ -639,7 +677,7 @@ int main(void)
 
 
         //Call this function to initialize the RPS to a course
-      RPS.InitializeTouchMenu();
+     // RPS.InitializeTouchMenu();
 
 
         //Wait for touchscreen to be pressed
@@ -669,7 +707,7 @@ int main(void)
         //we will never get here because of the infinite while loop
         //return 0;
     //}
-   // RPS.InitializeTouchMenu();
+    RPS.InitializeTouchMenu();
     int motor_percent = 25; //Input power level here
     int expected_counts =72 ; //Input theoretical counts here
     int leftPercent=0;
@@ -690,10 +728,8 @@ int main(void)
  //   while(LCD.Touch(&x,&y));
     while(true){//Wait for screen to be unpressed
    if(cds.Value()<1){
-       // move forward 1 inches
-      adjustedComp(leftPercent, rightPercent, motor_percent, expected_counts);
+    adjustedComp(leftPercent, rightPercent, motor_percent, expected_counts);
+    }
 }
   }
-}
-
 
